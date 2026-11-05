@@ -76,10 +76,14 @@ export default async function HomePage() {
               Explore destinations
             </Link>
           </div>
-          <p className="mt-10 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/75">
-            Air ticketing <span className="px-2 text-white/40">/</span> Holidays <span className="px-2 text-white/40">/</span> Visa
-            assistance <span className="px-2 text-white/40">/</span> Hotels
-          </p>
+          <ul className="mt-10 flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/75">
+            {["Air ticketing", "Holidays", "Visa assistance", "Hotels"].map((x, i) => (
+              <li key={x} className="whitespace-nowrap">
+                {i > 0 ? <span aria-hidden className="pr-4 text-white/40">/</span> : null}
+                {x}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="absolute right-3 bottom-2 hidden text-[10px] text-white/50 sm:block">Photo: {SITE_IMAGES.hero.credit}</p>
       </section>

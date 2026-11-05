@@ -47,7 +47,7 @@ export function QuickPlanner() {
 
   return (
     <div className="rounded-xl bg-white p-4 shadow-[0_24px_70px_-30px_rgba(7,29,37,0.45)] ring-1 ring-black/5 sm:p-6">
-      <div role="tablist" aria-label="What do you need?" className="-mx-1 flex gap-1 overflow-x-auto border-b border-line">
+      <div role="tablist" aria-label="What do you need?" className="-mx-1 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-line [scrollbar-width:none]">
         {TABS.map((t, i) => (
           <button
             key={t.id}
@@ -69,7 +69,14 @@ export function QuickPlanner() {
             <svg aria-hidden viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
               <path d={t.icon} />
             </svg>
-            {t.label}
+            {t.id === "visa" ? (
+              <>
+                <span className="sm:hidden">Visa</span>
+                <span className="hidden sm:inline">{t.label}</span>
+              </>
+            ) : (
+              t.label
+            )}
           </button>
         ))}
       </div>
