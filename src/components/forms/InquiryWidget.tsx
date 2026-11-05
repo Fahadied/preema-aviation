@@ -53,6 +53,8 @@ interface Props {
   whatsapp?: string | null;
   variant?: "hero" | "page";
   heading?: string;
+  /** Field values carried over from the homepage quick planner. */
+  prefill?: Record<string, string>;
 }
 
 export function InquiryWidget({
@@ -63,7 +65,9 @@ export function InquiryWidget({
   whatsapp,
   variant = "page",
   heading,
+  prefill = {},
 }: Props) {
+  const pf = prefill;
   const uid = useId();
   const [type, setType] = useState<WidgetType>(initialType && types.includes(initialType) ? initialType : types[0]);
   const [step, setStep] = useState<"details" | "contact">("details");
@@ -71,7 +75,7 @@ export function InquiryWidget({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [tripType, setTripType] = useState<"round_trip" | "one_way" | "multi_city">("round_trip");
   const [legCount, setLegCount] = useState(2);
-  const [helpChoose, setHelpChoose] = useState(false);
+  const [helpChoose, setHelpChoose] = useState(pf.help_me_choose === "1");
   const { state, submit, reset, fieldErrors } = useInquirySubmit();
   const forms = useRef<Partial<Record<WidgetType, HTMLFormElement | null>>>({});
   const contactRef = useRef<HTMLFormElement | null>(null);
@@ -365,9 +369,9 @@ export function InquiryWidget({
                 </fieldset>
                 {tripType !== "multi_city" ? (
                   <div className={grid}>
-                    <TextField name="from" label="From (city or airport)" required defaultValue="Dhaka" error={e.from} autoComplete="off" />
-                    <TextField name="to" label="To (city or airport)" required error={e.to} autoComplete="off" />
-                    <TextField name="depart_date" type="date" label="Departure date" required min={min} error={e.depart_date} />
+                    <TextField name="from" label="From (city or airport)" required defaultValue={pf.from || "Dhaka"} error={e.from} autoComplete="off" />
+                    <TextField name="to" label="To (city or airport)" required defaultValue={pf.to} error={e.to} autoComplete="off" />
+                    <TextField name="depart_date" type="date" label="Departure date" required min={min} defaultValue={pf.date} error={e.depart_date} />
                     {tripType === "round_trip" ? (
                       <TextField name="return_date" type="date" label="Return date" required min={min} error={e.return_date} />
                     ) : null}
@@ -400,7 +404,7 @@ export function InquiryWidget({
                   </div>
                 )}
                 <div className="grid grid-cols-3 gap-3">
-                  <TextField name="adults" type="number" label="Adults" required defaultValue={1} min={1} max={9} inputMode="numeric" error={e.adults} hint="12+ yrs" />
+                  <TextField name="adults" type="number" label="Adults" required defaultValue={pf.travellers || 1} min={1} max={9} inputMode="numeric" error={e.adults} hint="12+ yrs" />
                   <TextField name="children" type="number" label="Children" required defaultValue={0} min={0} max={9} inputMode="numeric" error={e.children} hint="2–11 yrs" />
                   <TextField name="infants" type="number" label="Infants" required defaultValue={0} min={0} max={9} inputMode="numeric" error={e.infants} hint="Under 2" />
                 </div>
@@ -431,19 +435,19 @@ export function InquiryWidget({
                     name="destination"
                     label="Destination"
                     required={!helpChoose}
-                    defaultValue={destinationContext?.name}
+                    defaultValue={destinationContext?.name ?? pf.destination}
                     placeholder={helpChoose ? "We will suggest options" : "e.g. Maldives, Nepal, Cox's Bazar"}
                     error={e.destination}
                   />
-                  <Checkbox name="help_me_choose" label="Help me choose a destination" className="sm:pt-7" onChange={setHelpChoose} />
+                  <Checkbox name="help_me_choose" label="Help me choose a destination" className="sm:pt-7" defaultChecked={pf.help_me_choose === "1"} onChange={setHelpChoose} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <TextField name="date_from" type="date" label="Preferred start date" min={min} error={e.date_from} />
+                  <TextField name="date_from" type="date" label="Preferred start date" min={min} defaultValue={pf.date_from} error={e.date_from} />
                   <TextField name="date_to" type="date" label="Latest return date" min={min} error={e.date_to} />
-                  <TextField name="nights" type="number" label="Nights" required defaultValue={4} min={1} max={60} inputMode="numeric" error={e.nights} />
+                  <TextField name="nights" type="number" label="Nights" required defaultValue={pf.nights || 4} min={1} max={60} inputMode="numeric" error={e.nights} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <TextField name="adults" type="number" label="Adults" required defaultValue={2} min={1} max={50} inputMode="numeric" error={e.adults} />
+                  <TextField name="adults" type="number" label="Adults" required defaultValue={pf.holiday_adults || 2} min={1} max={50} inputMode="numeric" error={e.adults} />
                   <TextField name="children" type="number" label="Children" required defaultValue={0} min={0} max={30} inputMode="numeric" error={e.children} />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -480,19 +484,19 @@ export function InquiryWidget({
             {t === "visa" && (
               <>
                 <div className={grid}>
-                  <TextField name="destination_country" label="Destination country" required error={e.destination_country} />
+                  <TextField name="destination_country" label="Destination country" required defaultValue={pf.destination_country} error={e.destination_country} />
                   <SelectField
                     name="purpose"
                     label="Purpose of visit"
                     required
-                    defaultValue="Tourism"
+                    defaultValue={pf.purpose || "Tourism"}
                     options={VISA_PURPOSES.map((p) => ({ value: p, label: p }))}
                     error={e.purpose}
                   />
                   <TextField name="nationality" label="Applicant nationality" required defaultValue="Bangladeshi" error={e.nationality} />
                   <TextField name="residence_country" label="Country of residence" required defaultValue="Bangladesh" error={e.residence_country} />
-                  <TextField name="travel_date" type="date" label="Intended travel date" min={min} error={e.travel_date} />
-                  <TextField name="applicants" type="number" label="Number of applicants" required defaultValue={1} min={1} max={50} inputMode="numeric" error={e.applicants} />
+                  <TextField name="travel_date" type="date" label="Intended travel date" min={min} defaultValue={pf.travel_date} error={e.travel_date} />
+                  <TextField name="applicants" type="number" label="Number of applicants" required defaultValue={pf.applicants || 1} min={1} max={50} inputMode="numeric" error={e.applicants} />
                 </div>
                 <TextArea name="notes" label="Notes" placeholder="Previous travel, occupation type, urgency…" error={e.notes} rows={2} />
                 <p className="text-xs text-muted">
@@ -503,13 +507,13 @@ export function InquiryWidget({
 
             {t === "hotel" && (
               <>
-                <TextField name="destination" label="Destination or area" required defaultValue={destinationContext?.name} error={e.destination} />
+                <TextField name="destination" label="Destination or area" required defaultValue={destinationContext?.name ?? pf.hotel_destination} error={e.destination} />
                 <div className={grid}>
-                  <TextField name="check_in" type="date" label="Check-in" required min={min} error={e.check_in} />
-                  <TextField name="check_out" type="date" label="Check-out" required min={min} error={e.check_out} />
+                  <TextField name="check_in" type="date" label="Check-in" required min={min} defaultValue={pf.check_in} error={e.check_in} />
+                  <TextField name="check_out" type="date" label="Check-out" required min={min} defaultValue={pf.check_out} error={e.check_out} />
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  <TextField name="guests" type="number" label="Guests" required defaultValue={2} min={1} max={50} inputMode="numeric" error={e.guests} />
+                  <TextField name="guests" type="number" label="Guests" required defaultValue={pf.guests || 2} min={1} max={50} inputMode="numeric" error={e.guests} />
                   <TextField name="rooms" type="number" label="Rooms" required defaultValue={1} min={1} max={25} inputMode="numeric" error={e.rooms} />
                   <SelectField
                     name="category"

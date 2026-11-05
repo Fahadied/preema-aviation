@@ -1,30 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #071526;
-  --color-navy-900: #0b1f36;
-  --color-navy-800: #12304f;
-  --color-navy-700: #1b3f63;
-  --color-teal-700: #0b6361;
-  --color-teal-600: #0f7c7a;
-  --color-teal-500: #16928f;
-  --color-teal-100: #d7efec;
+  --color-navy-950: #071d25;
+  --color-navy-900: #102c36;
+  --color-navy-800: #193c48;
+  --color-navy-700: #24505e;
+  --color-teal-700: #00564f;
+  --color-teal-600: #006b62;
+  --color-teal-500: #13877c;
+  --color-teal-100: #dcefeb;
   --color-mint-100: #e3f5ee;
   --color-mint-200: #c7ebdd;
-  --color-ivory-50: #fdfbf6;
-  --color-ivory-100: #f8f3e9;
-  --color-ivory-200: #efe7d7;
-  --color-ink: #1c2733;
-  --color-muted: #566270;
-  --color-line: #e4dccd;
+  --color-ivory-50: #f7f6f0;
+  --color-ivory-100: #efeee6;
+  --color-ivory-200: #e4e2d6;
+  --color-ink: #102c36;
+  --color-muted: #536a70;
+  --color-line: #dfddd2;
   --color-danger: #b42318;
   --color-success: #0f6b45;
 
   --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --radius-card: 1.25rem;
-  --radius-field: 0.75rem;
+  --radius-card: 0.875rem;
+  --radius-field: 0.5rem;
 }
 
 @layer base {
@@ -38,9 +38,9 @@
     overflow-x: hidden;
   }
   h1, h2, h3, .font-display {
-    @apply font-serif text-navy-900;
+    @apply font-serif font-normal text-navy-900;
     font-optical-sizing: auto;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
   }
   :focus-visible {
     outline: 3px solid var(--color-teal-500);
@@ -65,10 +65,10 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 @utility eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.18em] text-teal-700;
+    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-700;
   }
 @utility btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60;
   }
 @utility btn-primary {
     @apply btn bg-teal-600 text-white hover:bg-teal-700;

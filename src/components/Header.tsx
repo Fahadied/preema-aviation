@@ -39,7 +39,7 @@ export function Header() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-ivory-50/90 backdrop-blur supports-[backdrop-filter]:bg-ivory-50/75">
+    <header className="sticky top-0 z-40 border-b border-line/70 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-full focus:bg-navy-900 focus:px-4 focus:py-2 focus:text-white">
         Skip to content
       </a>
@@ -64,7 +64,7 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <Link href="/plan-your-trip" className="btn-primary hidden sm:inline-flex">
-            {t.nav.plan}
+            {t.nav.plan} <span aria-hidden>↗</span>
           </Link>
           <button
             ref={buttonRef}
@@ -84,7 +84,7 @@ export function Header() {
       <div
         id="mobile-nav"
         hidden={!open}
-        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-ivory-50 lg:hidden"
+        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-white lg:hidden"
       >
         <nav aria-label="Mobile" className="container-page py-6">
           <ul className="divide-y divide-line">

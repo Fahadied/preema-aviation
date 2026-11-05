@@ -22,6 +22,36 @@ export default async function PlanPage({ searchParams }: { searchParams: SP }) {
     one(sp.destination) ? getDestination(one(sp.destination)) : Promise.resolve(null),
   ]);
   const requested = one(sp.type) as WidgetType;
+
+  // Answers carried over from the homepage quick planner (validated again on submit).
+  const clip = (v: string, n = 80) => v.trim().slice(0, n);
+  const isDate = (v: string) => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "");
+  const count = (v: string, max: number) => {
+    const n = Number.parseInt(v, 10);
+    return Number.isFinite(n) && n >= 1 ? String(Math.min(n, max)) : "";
+  };
+  const to = clip(one(sp.to));
+  const date = isDate(one(sp.date));
+  const people = one(sp.travellers);
+  const prefill: Record<string, string> = {
+    from: clip(one(sp.from)),
+    to,
+    date,
+    travellers: count(people, 9),
+    destination: to,
+    help_me_choose: requested === "holiday" && !to && people ? "1" : "",
+    date_from: date,
+    nights: count(one(sp.nights), 60),
+    holiday_adults: count(people, 50),
+    destination_country: to,
+    purpose: clip(one(sp.purpose), 20),
+    travel_date: date,
+    applicants: count(people, 50),
+    hotel_destination: to,
+    check_in: date,
+    check_out: isDate(one(sp.date2)),
+    guests: count(people, 50),
+  };
   const wa = settings.whatsapp_verified ? settings.whatsapp : null;
 
   let widget;
@@ -44,7 +74,7 @@ export default async function PlanPage({ searchParams }: { searchParams: SP }) {
       />
     );
   } else {
-    widget = <InquiryWidget types={TYPES} initialType={TYPES.includes(requested) ? requested : "flight"} whatsapp={wa} />;
+    widget = <InquiryWidget types={TYPES} initialType={TYPES.includes(requested) ? requested : "flight"} whatsapp={wa} prefill={prefill} />;
   }
 
   return (
